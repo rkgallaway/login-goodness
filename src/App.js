@@ -8,6 +8,8 @@ import LogoutButton from './LogoutButton';
 import { withAuth0 } from '@auth0/auth0-react';
 import axios from 'axios';
 
+const SERVER = process.env.REACT_APP_API_SERVER;
+
 class App extends React.Component {
   constructor(props) {
     super(props);
@@ -18,7 +20,7 @@ class App extends React.Component {
 
   async componentDidMount() {
     try {
-      const results = await axios.get('http://localhost:3001/cats');
+      const results = await axios.get(`${SERVER}/cats`);
       this.setState({ cats: results.data });
     } catch (err) {
       console.log(err);
@@ -28,7 +30,7 @@ class App extends React.Component {
   handleCreate = async (catInfo) => {
     console.log()
     try {
-      let response = await axios.post('http://localhost:3001/cats', catInfo);
+      let response = await axios.post(`${SERVER}/cats`, catInfo);
       let newCat = response.data;
       this.setState({
         cats: [...this.state.cats, newCat],
@@ -41,7 +43,7 @@ class App extends React.Component {
   handleDelete = async (id) => {
     // console.log(id);
     try {
-      await axios.delete(`http://localhost:3001/cats/${id}`);
+      await axios.delete(`${SERVER}/cats/${id}`);
       let remainingCats = this.state.cats.filter(cat => cat._id !== id);
       this.setState({
         cats: remainingCats
@@ -53,7 +55,7 @@ class App extends React.Component {
 
   handleUpdate = async (cat) => {
     console.log('cat to update:', cat);
-    await axios.put(`http://localhost:3001/cats/${cat._id}`, cat);
+    await axios.put(`${SERVER}/cats/${cat._id}`, cat);
 
     //Update the state of the cats
     const updateCats = this.state.cats.map(stateCat => {
@@ -79,7 +81,7 @@ class App extends React.Component {
       headers: { "Authorization": `Bearer ${jwt}` },
     };
 
-    const serverResponse = await axios.get('http://localhost:3001/test-login', config);
+    const serverResponse = await axios.get(`${SERVER}/test-login`, config);
 
     console.log('it worked if data:  ', serverResponse);
   }
